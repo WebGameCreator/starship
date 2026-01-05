@@ -41,16 +41,20 @@ const audio = [
     /* 1: Music */document.getElementById("music")
 ];
 
-audio[1].play();
+document.body.onclick = () => {
+    audio[1].play();
+    document.body.onclick = null;
+}
 
-const maxFps = 30;
+const maxFps = 40;
 
 const defaultSpeed = 1;
-const shipFriction = 0.85;
+const shipFriction = 0.9;
 const projectileFriction = 0.95;
 
-const starAmount = 2000;
-const enemyAmount = 40;
+const mapSize = 5000;
+const starAmount = 500;
+const enemyAmount = 10;
 
 const collisionSize = 50;
 const projectileSpeed = 5;
@@ -102,7 +106,7 @@ class GameObject {
 
 class Star extends GameObject {
     constructor(respawn = true) {
-        super((Math.random() - 0.5) * 10000, (Math.random() - 0.5) * 10000, 34);
+        super((Math.random() - 0.5) * mapSize, (Math.random() - 0.5) * mapSize, 34);
         this.respawn = respawn;
         this.velocityX = 0;
         this.velocityY = 0;
@@ -120,7 +124,7 @@ class Star extends GameObject {
                 }
                 return true;
             }
-            if (distanceX < collisionSize * (ships[i].level * 0.5 + 1.5)  &&
+            if (distanceX < collisionSize * (ships[i].level * 0.5 + 1.5) &&
                 distanceY < collisionSize * (ships[i].level * 0.5 + 1.5)
             ) {
                 const movement = normalize(ships[i].posX - this.posX, ships[i].posY - this.posY);
@@ -157,8 +161,8 @@ class Ship extends GameObject {
         this.rot = Math.atan2(this.velocityX, this.velocityY);
         this.posX += this.velocityX;
         this.posY += this.velocityY;
-        this.posX = Math.max(Math.min(this.posX, 5000), -5000);
-        this.posY = Math.max(Math.min(this.posY, 5000), -5000);
+        this.posX = Math.max(Math.min(this.posX, mapSize * 0.5), mapSize * -0.5);
+        this.posY = Math.max(Math.min(this.posY, mapSize * 0.5), mapSize * -0.5);
     }
     shoot() {
         if (this == ships[player]) {
@@ -225,8 +229,8 @@ class Player extends Ship {
 
 class Enemy extends Ship {
     constructor() {
-        const posX = (Math.random() - 0.5) * 10000;
-        const posY = (Math.random() - 0.5) * 10000;
+        const posX = (Math.random() - 0.5) * mapSize;
+        const posY = (Math.random() - 0.5) * mapSize;
         const isVisible = Math.abs(cameraPosX - posX) < canvas.width && Math.abs(cameraPosY - posY) < canvas.height;
         const level = isVisible ? 0 : Math.floor(Math.random() * Math.random() * Math.random() * 17);
         super(posX, posY, level, Math.floor(Math.random() * 2) + 1);
@@ -318,7 +322,7 @@ class Projectile extends GameObject {
                     if (player > i) {
                         player--;
                     }
-                    for (let i = 0; i < 10 * (level + 2); i++) {
+                    for (let i = 0; i < 20 * level + 20; i++) {
                         const star = new Star(false);
                         stars.push(star);
                         star.posX = posX;
@@ -441,7 +445,7 @@ function render() {
     ctx.strokeStyle = "#1a1a1a";
     const lineWidth = canvas.width * 0.5;
     ctx.lineWidth = lineWidth;
-    ctx.strokeRect(-5000 + canvas.width * 0.5 - lineWidth * 0.5 - Math.floor(cameraPosX), -5000 + canvas.height * 0.5 - lineWidth * 0.5 + Math.floor(cameraPosY), 10000 + lineWidth, 10000 + lineWidth);
+    ctx.strokeRect(-0.5 * mapSize + canvas.width * 0.5 - lineWidth * 0.5 - Math.floor(cameraPosX), -0.5 * mapSize + canvas.height * 0.5 - lineWidth * 0.5 + Math.floor(cameraPosY), mapSize + lineWidth, mapSize + lineWidth);
     canvas.style["background-position"] = -Math.floor(cameraPosX) + "px " + Math.floor(cameraPosY) + "px";
 
     for (let i = 0; i < stars.length; i++) {
@@ -476,7 +480,6 @@ function render() {
         }, 1000 / maxFps - timeSinceLastFrame);
     }
     else {
-        console.log("skip");
         frameStart = performance.now();
         requestAnimationFrame(render);
     }
