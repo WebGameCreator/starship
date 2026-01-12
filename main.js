@@ -327,8 +327,8 @@ class Projectile extends GameObject {
                         stars.push(star);
                         star.posX = posX;
                         star.posY = posY;
-                        const velocity = normalize(Math.random(), Math.random());
-                        const speed = (Math.random() * 2 - 1) * 20 + 5 * level;
+                        const velocity = normalize(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0);
+                        const speed = Math.random() * (15 + 2 * level);
                         star.velocityX = velocity.x * speed;
                         star.velocityY = velocity.y * speed;
                     }
