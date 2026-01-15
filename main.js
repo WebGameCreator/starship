@@ -61,8 +61,11 @@ const projectileSpeed = 5;
 const projectileTime = 20;
 
 const score = document.getElementById("score");
+const menuContainer = document.getElementById("menuContainer");
 const playButton = document.getElementById("playButton");
 const canvas = document.getElementById("canvas");
+
+playButton.onpointerdown = start;
 
 function resize() {
     canvas.width = window.innerWidth;
@@ -385,7 +388,7 @@ function menu() {
     window.onmousemove = null;
     canvas.onpointerdown = null;
     window.ontouchmove = null;
-    playButton.onpointerdown = start;
+    menuContainer.style.display = "flex";
 }
 
 function updateMousePos(evt) {
@@ -395,6 +398,7 @@ function updateMousePos(evt) {
 }
 
 function start(evt) {
+    menuContainer.style.display = "none";
     canvas.onpointerdown = null;
     updateMousePos(evt);
     mouse = evt.pointerType === "mouse";
