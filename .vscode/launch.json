@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug in Edge",
+            "program": "${workspaceFolder}/../static-server/server.js",
+            "args": [
+                "${workspaceFolder}"
+            ],
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "action": "debugWithEdge",
+                "pattern": "Listening on port ([0-9]+)",
+                "uriFormat": "http://localhost:%s",
+                "webRoot": "${workspaceFolder}"
+            }
+        }
+    ]
+}
